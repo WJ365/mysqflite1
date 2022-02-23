@@ -73,8 +73,31 @@ class _NotesPageState extends State<NotesPage> {
                   builder: (contex) => NoteDetailPage(noteId: note.id!),
                 ),
               );
+              refreshNotes();
             },
+            child: NoteCardWidget(
+              notes: note,
+              index: index,
+            ),
           );
         },
       );
+}
+
+class NoteCardWidget extends StatelessWidget {
+  final Note notes;
+  final int index;
+  const NoteCardWidget({Key? key, required this.notes, required this.index})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text(notes.title),
+        subtitle: Text(notes.description),
+        leading: Text(notes.id.toString()),
+      ),
+    );
+  }
 }

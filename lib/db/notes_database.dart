@@ -19,13 +19,13 @@ class NotesDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    const idType = 'INTENGER PRIMARY KEY AUTOINCREMENT';
+    const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
-    const boolType = 'BOOL NOY NULL';
-    const integerType = 'INTEGER OT NULL';
+    const boolType = 'BOOL NOT NULL';
+    const integerType = 'INTEGER NOT NULL';
 
     await db.execute('''
-CREATE TABLE $tableNotes (
+CREATE TABLE $tableNotes(
   ${NoteFields.id} $idType,
   ${NoteFields.isImportan} $boolType,
   ${NoteFields.number} $integerType,

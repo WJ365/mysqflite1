@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mysqflite/db/notes_database.dart';
 import 'package:mysqflite/model/note.dart';
+import 'package:mysqflite/page/edit_note_page.dart';
 
 class NoteDetailPage extends StatefulWidget {
   final int noteId;
@@ -31,31 +32,51 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: EdgeInsets.all(12),
-              child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                children: [
-                  Text(
-                    note.title,
-                    style: TextStyle(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: EdgeInsets.all(12),
+                child: ListView(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  children: [
+                    Text(
+                      note.title,
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    DateFormat.yMMMMd().format(note.createdTime),
-                    style: TextStyle(color: Colors.white38),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    note.description,
-                    style: TextStyle(color: Colors.white70, fontSize: 18),
-                  ),
-                ],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      DateFormat.yMMMMd().format(note.createdTime),
+                      style: TextStyle(color: Colors.white38),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      note.description,
+                      style: TextStyle(color: Colors.white70, fontSize: 18),
+                    ),
+                  ],
+                ),
               ),
-            ));
+      );
+  Widget deleteButton() => IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () async {
+          await NotesDatabase.instance.delete(widget.noteId);
+          Navigator.of(context).pop();
+        },
+      );
+
+  Widget editButton() => IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () async {
+          // await NotesDatabase.instance.update(note);
+          await Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AddEditNotePage(note: note),
+          ));
+          refreshNote();
+        },
+      );
 }
