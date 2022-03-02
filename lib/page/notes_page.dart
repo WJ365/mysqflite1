@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
 import 'package:mysqflite/db/notes_database.dart';
 import 'package:mysqflite/model/note.dart';
 import 'package:mysqflite/page/edit_note_page.dart';
-
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mysqflite/page/note_detail_page.dart';
 
 class NotesPage extends StatefulWidget {
@@ -17,12 +15,15 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   late List<Note> notes;
-  bool isLoading = false;
+  //late Note note;
+
+  bool isLoading = false; //asdfghjk
 
   @override
   void initState() {
     super.initState();
     refreshNotes();
+    setState(() {});
   }
 
   @override
@@ -50,7 +51,8 @@ class _NotesPageState extends State<NotesPage> {
               ? CircularProgressIndicator()
               : notes.isEmpty
                   ? Text('No Notes')
-                  : buildNotes(),
+                  // : MiLista(notes: notes),
+                  : myBuildNotes(),
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.black,
@@ -58,46 +60,80 @@ class _NotesPageState extends State<NotesPage> {
           onPressed: () async {
             await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => AddEditNotePage()));
-            refreshNotes();
+            //refreshNotes();
           },
         ),
       );
-  Widget buildNotes() => MasonryGridView.count(
-        crossAxisCount: 4,
-        itemBuilder: (contex, index) {
-          final note = notes[index];
+
+  Widget myBuildNotes() => ListView.builder(
+        itemCount: notes.length,
+        itemBuilder: (_, i) {
           return GestureDetector(
+            child: Card(
+              color: Colors.black12,
+              child: ListTile(
+                title: Text(notes[i].title),
+                subtitle: Text(notes[i].description),
+                leading: Text(notes[i].id.toString()),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(notes[i].number.toString()),
+                    Text(notes[i].isImportan.toString()),
+                  ],
+                ),
+              ),
+            ),
             onTap: () async {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (contex) => NoteDetailPage(noteId: note.id!),
+                  builder: (contex) => NoteDetailPage(noteId: notes[i].id!),
                 ),
               );
-              refreshNotes();
             },
-            child: NoteCardWidget(
-              notes: note,
-              index: index,
-            ),
           );
         },
       );
 }
 
-class NoteCardWidget extends StatelessWidget {
-  final Note notes;
-  final int index;
-  const NoteCardWidget({Key? key, required this.notes, required this.index})
-      : super(key: key);
+// class MiLista extends StatelessWidget {
+//   final List<Note> notes;
+//   // final Note note;
+//   const MiLista({Key? key, required this.notes}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(notes.title),
-        subtitle: Text(notes.description),
-        leading: Text(notes.id.toString()),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView.builder(
+//       itemCount: notes.length,
+//       itemBuilder: (context, i) {
+//         //return NoteCardWidget(notes: note);
+//         return GestureDetector(
+//           child: Card(
+//             color: Colors.black12,
+//             child: ListTile(
+//               title: Text(notes[i].title),
+//               subtitle: Text(notes[i].description),
+//               leading: Text(notes[i].id.toString()),
+//               trailing: Row(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   Text(notes[i].number.toString()),
+//                   Text(notes[i].isImportan.toString()),
+//                 ],
+//               ),
+//             ),
+//           ),
+//           onTap: () async {
+//             Navigator.of(context).push(
+//               MaterialPageRoute(
+//                 builder: (contex) => NoteDetailPage(noteId: notes[i].id!),
+//               ),
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+
